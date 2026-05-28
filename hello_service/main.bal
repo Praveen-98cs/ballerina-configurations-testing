@@ -91,6 +91,11 @@ configurable int numberOptional = 42;          // OPTIONAL
 // Environment variable
 configurable string name = os:getEnv("NAME");
 
+// Build gate: setting any non-empty value via Choreo's Configurations panel
+// makes the unit test stage fail, which fails the build. Useful for
+// reproducing same-commit success/failure scenarios. Leave empty to pass.
+configurable string secret = "";
+
 // ============================================
 // SERVICE
 // ============================================
@@ -164,4 +169,12 @@ service / on new http:Listener(8090) {
 @test:Config {enable: false}
 function intentionalFailTest() {
     test:assertFail("Intentional test failure — set enable: false to pass the build");
+}
+
+// Build gate: fails when the 'secret' configurable is set to any non-empty value.
+@test:Config {}
+function buildGateTest() {
+    if secret != "" {
+        test:assertFail(string `Build gate triggered: 'secret' was set to "${secret}". Clear it to pass the build.`);
+    }
 }
