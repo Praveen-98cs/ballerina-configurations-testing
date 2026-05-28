@@ -1,6 +1,7 @@
 import ballerina/http;
 import ballerina/io;
 import ballerina/os;
+import ballerina/test;
 
 // ============================================
 // MINIMAL TEST - Level 1, 2, 3 Configurations
@@ -157,4 +158,10 @@ service / on new http:Listener(8090) {
         
         return response;
     }
+}
+
+// Set enable: true to intentionally fail the Choreo unit test stage
+@test:Config {enable: false}
+function intentionalFailTest() {
+    test:assertFail("Intentional test failure — set enable: false to pass the build");
 }
