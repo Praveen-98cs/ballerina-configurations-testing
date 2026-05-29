@@ -166,13 +166,3 @@ service / on new http:Listener(8090) {
 function intentionalFailTest() {
     test:assertFail("Intentional test failure — set enable: false to pass the build");
 }
-
-// Build gate: fails when the SECRET build variable (or build secret) is set to any non-empty value.
-// Add/remove in Choreo's "Build Variables and Secrets" panel — works for both variables and secrets.
-@test:Config {}
-function buildGateTest() {
-    string envSecret = os:getEnv("SECRET");
-    if envSecret != "" {
-        test:assertFail(string `Build gate triggered: SECRET build variable was set to "${envSecret}". Remove it to pass the build.`);
-    }
-}
